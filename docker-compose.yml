@@ -1,0 +1,40 @@
+version: '3.8'
+name: em-parking
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: emp-mongodb-container
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - em-network
+
+  api:
+    container_name: emp-api-container
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/home/node
+      - /home/node/node_modules
+    env_file:
+      - ./.env
+    environment:
+      - MONGODB_HOST=mongodb
+    networks:
+      - em-network
+
+networks:
+  em-network:
+    driver: bridge
