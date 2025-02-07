@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express'
 import { validateRequest } from '@modules/middleware/validate.middleware'
-import { createUser, getUser, listUsers } from './user.service'
+import { createUser, deleteUser, getUser, listUsers } from './user.service'
 import { CreateUserArgs, ListUserArgs } from './user.type'
 
 const router = express.Router()
@@ -21,6 +21,11 @@ router.post('/', validateRequest(CreateUserArgs), async (req: Request, res: Resp
 
 router.get('/:id', async (req: Request, res: Response) => {
   const user = await getUser(req.params.id)
+  res.json(user).status(200)
+})
+
+router.delete('/:id', async (req: Request, res: Response) => {
+  const user = await deleteUser(req.params.id)
   res.json(user).status(200)
 })
 

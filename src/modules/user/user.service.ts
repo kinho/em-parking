@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt'
 import { throwError } from "@modules/error"
+import { PASSWORD_SALT } from '@modules/utils/validation.default'
 import { User, UserModel } from "./user.schema"
 import { CreateUserArgs, ListUserArgs, ListUserResponse } from "./user.type"
-
-const SALT = 10
 
 export const getUser = async (id: string): Promise<User | null> => {
   return UserModel.findById(id)
@@ -32,7 +31,9 @@ export const createUser = async ({ name, email, password, role }: CreateUserArgs
       role: role || 'DEFAULT',
     } as User)
 
-    return user.save()
+    const saved = await user.save()
+    return { ...saved.toJSON(), password: '' }
+
   } catch (error) {
     return throwError('INTERNAL_ERROR')
   }
@@ -40,7 +41,16 @@ export const createUser = async ({ name, email, password, role }: CreateUserArgs
 
 const hashPassword = async (password: string): Promise<string> => {
   try {
-    return bcrypt.hash(password, await bcrypt.genSalt(SALT))
+    return bcrypt.hash(password, await bcrypt.genSalt(PASSWORD_SALT))
+  } catch (error) {
+    return throwError('INTERNAL_ERROR')
+  }
+}
+
+export const deleteUser = async (id: string): Promise<boolean> => {
+  try {
+    await UserModel.deleteOne({ _id: id })
+    return true
   } catch (error) {
     return throwError('INTERNAL_ERROR')
   }

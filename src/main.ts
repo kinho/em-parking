@@ -17,6 +17,7 @@ const PORT: number = parseInt(`${ENV_PORT}`) || 4000
 
   const app = express()
   app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
 
   app.get('/', (_, res) => { res.send('EM-Parking API') })
   app.use('/user', UserController)
