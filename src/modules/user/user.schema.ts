@@ -15,6 +15,9 @@ export class User {
   @prop({ type: String, required: true, select: false })
   public password!: string
 
+  @prop({ type: Boolean, default: true })
+  public active!: boolean
+
   @prop({
     type: String,
     enum: UserRoleEnum,

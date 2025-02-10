@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "main": "src/main.ts",
+  "description": "Express MongoDB Parking Service Api",
   "scripts": {
     "start": "tsx src/main.ts",
     "start:dev": "tsx watch src/main.ts"
